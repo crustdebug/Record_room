@@ -25,15 +25,8 @@ app.use(session({
 
 // ─── Static Files ─────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ─── Ensure upload directories exist ──────────
-['uploads/covers', 'uploads/songs'].forEach(dir => {
-  const fullPath = path.join(__dirname, dir);
-  if (!fs.existsSync(fullPath)) {
-    fs.mkdirSync(fullPath, { recursive: true });
-  }
-});
+// Note: /uploads route removed - files are served from Supabase Storage
 
 // ─── Routes ───────────────────────────────────
 const authRoutes = require('./routes/auth');
