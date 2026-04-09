@@ -15,6 +15,15 @@
   </div>
 
   <div class="admin-layout">
+    <!-- Mobile Menu Toggle Button -->
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
@@ -117,6 +126,9 @@
             </thead>
             <tbody id="songs-tbody"></tbody>
           </table>
+          
+          <!-- Mobile Card View -->
+          <div class="mobile-table-cards" id="songs-cards"></div>
         </div>
       </div>
 
@@ -140,6 +152,9 @@
             </thead>
             <tbody id="users-tbody"></tbody>
           </table>
+          
+          <!-- Mobile Card View -->
+          <div class="mobile-table-cards" id="users-cards"></div>
         </div>
       </div>
 
@@ -217,10 +232,20 @@
           </div>
           <div class="form-group">
             <label>Audio File *</label>
-            <div class="upload-zone" id="song-upload-zone">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-              <h4>Drop audio file here or click to browse</h4>
-              <p>Supports MP3, WAV, OGG, FLAC (max 100MB)</p>
+            <div class="upload-zone" id="song-upload-zone" style="position: relative; overflow: hidden; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <div id="song-upload-content" style="display: flex; flex-direction: column; align-items: center; z-index: 2;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                <button type="button" class="btn btn-secondary btn-sm" style="margin: 10px 0; pointer-events: none;">Upload Audio</button>
+                <h4>Drop audio file here or click to browse</h4>
+                <p style="margin-top: 5px;">Supports MP3, WAV, OGG, FLAC (max 100MB)</p>
+              </div>
+              <div id="song-preview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 1; background: var(--bg-elevated); border-radius: var(--radius-md, 8px); padding: 20px; flex-direction: column; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 48px; height: 48px; color: var(--accent); margin-bottom: 12px;">
+                  <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                </svg>
+                <div id="song-filename" style="font-size: 0.9rem; color: var(--text-primary); text-align: center; word-break: break-word; margin-bottom: 8px;"></div>
+                <div id="song-filesize" style="font-size: 0.75rem; color: var(--text-muted);"></div>
+              </div>
             </div>
             <input type="file" id="song-file-input" accept="audio/*" style="display:none;">
           </div>

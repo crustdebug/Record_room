@@ -40,6 +40,38 @@
 
   // ─── Navigation ────────────────────────────
   function setupNavigation() {
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    if (menuToggle) {
+      // Create overlay element
+      const overlay = document.createElement('div');
+      overlay.className = 'sidebar-overlay';
+      overlay.id = 'sidebar-overlay';
+      document.body.appendChild(overlay);
+      
+      // Toggle menu
+      menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+      });
+      
+      // Close menu when clicking overlay
+      overlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+      });
+      
+      // Close menu when clicking a nav item
+      document.querySelectorAll('.sidebar-nav-item[data-panel]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('active');
+        });
+      });
+    }
+    
     document.querySelectorAll('.sidebar-nav-item[data-panel]').forEach(btn => {
       btn.addEventListener('click', () => {
         const panel = btn.dataset.panel;
@@ -185,6 +217,7 @@
   // ─── Songs Panel ───────────────────────────
   function renderSongs(filterAlbumId) {
     const tbody = document.getElementById('songs-tbody');
+    const cardsContainer = document.getElementById('songs-cards');
     let filtered = allSongs;
 
     if (filterAlbumId) {
@@ -193,9 +226,11 @@
 
     if (filtered.length === 0) {
       tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">No songs found.</td></tr>`;
+      if (cardsContainer) cardsContainer.innerHTML = '<p style="text-align:center;padding:40px;color:var(--text-muted);">No songs found.</p>';
       return;
     }
 
+    // Render table view
     tbody.innerHTML = filtered.map(song => `
       <tr>
         <td>${song.track_number || '—'}</td>
@@ -207,7 +242,26 @@
       </tr>
     `).join('');
 
-    tbody.querySelectorAll('.delete-song-btn').forEach(btn => {
+    // Render mobile card view
+    if (cardsContainer) {
+      cardsContainer.innerHTML = filtered.map(song => `
+        <div class="mobile-card">
+          <div class="mobile-card-header">
+            <div>
+              <div class="mobile-card-title">${escapeHtml(song.title)}</div>
+              <div class="mobile-card-subtitle">${escapeHtml(song.albumTitle || '')}</div>
+            </div>
+            <div class="mobile-card-id">Track ${song.track_number || '—'}</div>
+          </div>
+          <div class="mobile-card-actions">
+            <button class="btn btn-danger btn-sm delete-song-btn" data-id="${song.id}">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Attach delete handlers for both views
+    document.querySelectorAll('.delete-song-btn').forEach(btn => {
       btn.addEventListener('click', () => deleteSong(parseInt(btn.dataset.id)));
     });
   }
@@ -240,7 +294,9 @@
   // ─── Users Panel ───────────────────────────
   function renderUsers() {
     const tbody = document.getElementById('users-tbody');
+    const cardsContainer = document.getElementById('users-cards');
 
+    // Render table view
     tbody.innerHTML = users.map(user => `
       <tr>
         <td>${user.id}</td>
@@ -260,7 +316,39 @@
       </tr>
     `).join('');
 
-    tbody.querySelectorAll('.delete-user-btn').forEach(btn => {
+    // Render mobile card view
+    if (cardsContainer) {
+      cardsContainer.innerHTML = users.map(user => `
+        <div class="mobile-card">
+          <div class="mobile-card-header">
+            <div>
+              <div class="mobile-card-title">${escapeHtml(user.username)}</div>
+              <div class="mobile-card-subtitle">
+                <span style="padding:3px 8px;border-radius:12px;font-size:0.7rem;font-weight:600;
+                  ${user.role === 'admin' 
+                    ? 'background:var(--accent-glow);color:var(--accent);' 
+                    : 'background:rgba(78,232,122,0.1);color:var(--success);'}">
+                  ${user.role}
+                </span>
+              </div>
+            </div>
+            <div class="mobile-card-id">#${user.id}</div>
+          </div>
+          <div class="mobile-card-body">
+            <div class="mobile-card-row">
+              <span class="mobile-card-label">Created:</span>
+              <span class="mobile-card-value">${new Date(user.created_at).toLocaleDateString()}</span>
+            </div>
+          </div>
+          <div class="mobile-card-actions">
+            <button class="btn btn-danger btn-sm delete-user-btn" data-id="${user.id}">Delete User</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Attach delete handlers for both views
+    document.querySelectorAll('.delete-user-btn').forEach(btn => {
       btn.addEventListener('click', () => deleteUser(parseInt(btn.dataset.id)));
     });
   }
@@ -347,14 +435,36 @@
       songUploadZone.classList.remove('dragover');
       if (e.dataTransfer.files.length) {
         songFileInput.files = e.dataTransfer.files;
-        songUploadZone.querySelector('h4').textContent = e.dataTransfer.files[0].name;
+        showSongPreview(e.dataTransfer.files[0]);
       }
     });
     songFileInput.addEventListener('change', () => {
       if (songFileInput.files.length) {
-        songUploadZone.querySelector('h4').textContent = songFileInput.files[0].name;
+        showSongPreview(songFileInput.files[0]);
       }
     });
+
+    function showSongPreview(file) {
+      const preview = document.getElementById('song-preview');
+      const content = document.getElementById('song-upload-content');
+      const filename = document.getElementById('song-filename');
+      const filesize = document.getElementById('song-filesize');
+      
+      if (preview && content && filename && filesize) {
+        filename.textContent = file.name;
+        filesize.textContent = formatFileSize(file.size);
+        content.style.display = 'none';
+        preview.style.display = 'flex';
+      }
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
 
     songSaveBtn.addEventListener('click', saveSong);
 
@@ -527,7 +637,14 @@
       document.getElementById('song-title-input').value = '';
       document.getElementById('song-track-input').value = '';
       document.getElementById('song-file-input').value = '';
-      document.getElementById('song-upload-zone').querySelector('h4').textContent = 'Drop audio file here or click to browse';
+      
+      // Reset song preview
+      const songPreview = document.getElementById('song-preview');
+      const songContent = document.getElementById('song-upload-content');
+      if (songPreview && songContent) {
+        songPreview.style.display = 'none';
+        songContent.style.display = 'flex';
+      }
 
       await refreshAll();
     } catch (err) {
