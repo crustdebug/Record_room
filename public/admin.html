@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Record Room Admin — Manage your music collection, upload albums and songs.">
+  <title>Record Room — Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💿</text></svg>">
+</head>
+<body>
+  <!-- Page Loader -->
+  <div class="page-loader" id="page-loader">
+    <div class="spinner" style="width:48px;height:48px;border-width:4px;"></div>
+  </div>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h1>Record <span>Room</span></h1>
+        <div class="admin-badge">Admin Panel</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="sidebar-nav-item active" data-panel="dashboard" id="nav-dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </button>
+        <button class="sidebar-nav-item" data-panel="albums" id="nav-albums">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+          Albums
+        </button>
+        <button class="sidebar-nav-item" data-panel="songs" id="nav-songs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          Songs
+        </button>
+        <button class="sidebar-nav-item" data-panel="users" id="nav-users">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Users
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-nav-item" id="admin-logout-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main" id="admin-main">
+
+      <!-- ═══ DASHBOARD PANEL ═══ -->
+      <div class="admin-panel active" id="panel-dashboard">
+        <div class="panel-header">
+          <h2>Dashboard</h2>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon albums">💿</div>
+            <div class="stat-value" id="stat-albums">0</div>
+            <div class="stat-label">Albums</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon songs">🎵</div>
+            <div class="stat-value" id="stat-songs">0</div>
+            <div class="stat-label">Songs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon users">👥</div>
+            <div class="stat-value" id="stat-users">0</div>
+            <div class="stat-label">Users</div>
+          </div>
+        </div>
+
+        <div class="panel-header">
+          <h2>Recent Albums</h2>
+        </div>
+        <div class="admin-album-grid" id="dashboard-recent-albums"></div>
+      </div>
+
+      <!-- ═══ ALBUMS PANEL ═══ -->
+      <div class="admin-panel" id="panel-albums">
+        <div class="panel-header">
+          <h2>Manage Albums</h2>
+          <button class="btn btn-primary btn-sm" id="add-album-btn">+ New Album</button>
+        </div>
+        <div class="admin-album-grid" id="admin-albums-grid"></div>
+      </div>
+
+      <!-- ═══ SONGS PANEL ═══ -->
+      <div class="admin-panel" id="panel-songs">
+        <div class="panel-header">
+          <h2>Manage Songs</h2>
+          <button class="btn btn-primary btn-sm" id="add-song-btn">+ Upload Song</button>
+        </div>
+
+        <div class="form-group" style="max-width:300px;margin-bottom:24px;">
+          <label for="song-album-filter">Filter by Album</label>
+          <select id="song-album-filter">
+            <option value="">All Albums</option>
+          </select>
+        </div>
+
+        <div class="songs-table-container">
+          <table class="data-table" id="songs-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Album</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="songs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ USERS PANEL ═══ -->
+      <div class="admin-panel" id="panel-users">
+        <div class="panel-header">
+          <h2>Manage Users</h2>
+          <button class="btn btn-primary btn-sm" id="add-user-btn">+ Add User</button>
+        </div>
+
+        <div class="songs-table-container">
+          <table class="data-table" id="users-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ═══ MODALS ═══ -->
+
+  <!-- Add/Edit Album Modal -->
+  <div class="modal-overlay admin-modal" id="album-modal">
+    <div class="modal">
+      <button class="modal-close" id="album-modal-close">&times;</button>
+      <div class="modal-body">
+        <h2 id="album-modal-title" style="font-family:var(--font-heading);margin-bottom:24px;">New Album</h2>
+        <form id="album-form">
+          <input type="hidden" id="album-edit-id">
+          <div class="form-group">
+            <label for="album-title-input">Album Title *</label>
+            <input type="text" id="album-title-input" placeholder="Enter album title" required>
+          </div>
+          <div class="form-group">
+            <label for="album-artist-input">Artist *</label>
+            <input type="text" id="album-artist-input" placeholder="Enter artist name" required>
+          </div>
+          <div class="form-group">
+            <label for="album-year-input">Year</label>
+            <input type="number" id="album-year-input" placeholder="e.g. 2024" min="1900" max="2100">
+          </div>
+          <div class="form-group">
+            <label for="album-desc-input">Description</label>
+            <textarea id="album-desc-input" rows="3" placeholder="Brief album description"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Cover Image</label>
+            <div class="upload-zone" id="cover-upload-zone" style="position: relative; overflow: hidden; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <div id="cover-upload-content" style="display: flex; flex-direction: column; align-items: center; z-index: 2;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <button type="button" class="btn btn-secondary btn-sm" style="margin: 10px 0; pointer-events: none;">Upload Image</button>
+                <h4>Drop cover image here or click to browse</h4>
+                <p style="margin-top: 5px;">Supports JPG, PNG, WebP (max 10MB)</p>
+              </div>
+              <img id="cover-preview-img" src="" alt="Cover Preview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 1; border-radius: var(--radius-md, 8px);" />
+            </div>
+            <input type="file" id="cover-file-input" accept="image/*" style="display:none;">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="album-cancel-btn">Cancel</button>
+        <button class="btn btn-primary" id="album-save-btn">Save Album</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Song Modal -->
+  <div class="modal-overlay admin-modal" id="song-modal">
+    <div class="modal">
+      <button class="modal-close" id="song-modal-close">&times;</button>
+      <div class="modal-body">
+        <h2 style="font-family:var(--font-heading);margin-bottom:24px;">Upload Song</h2>
+        <form id="song-form">
+          <div class="form-group">
+            <label for="song-title-input">Song Title *</label>
+            <input type="text" id="song-title-input" placeholder="Enter song title" required>
+          </div>
+          <div class="form-group">
+            <label for="song-album-select">Album *</label>
+            <select id="song-album-select" required>
+              <option value="">Select Album</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="song-track-input">Track Number</label>
+            <input type="number" id="song-track-input" placeholder="Auto-assigned if empty" min="1">
+          </div>
+          <div class="form-group">
+            <label>Audio File *</label>
+            <div class="upload-zone" id="song-upload-zone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+              <h4>Drop audio file here or click to browse</h4>
+              <p>Supports MP3, WAV, OGG, FLAC (max 100MB)</p>
+            </div>
+            <input type="file" id="song-file-input" accept="audio/*" style="display:none;">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="song-cancel-btn">Cancel</button>
+        <button class="btn btn-primary" id="song-save-btn">Upload Song</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add User Modal -->
+  <div class="modal-overlay admin-modal" id="user-modal">
+    <div class="modal">
+      <button class="modal-close" id="user-modal-close">&times;</button>
+      <div class="modal-body">
+        <h2 style="font-family:var(--font-heading);margin-bottom:24px;">Add User</h2>
+        <form id="user-form">
+          <div class="form-group">
+            <label for="user-username-input">Username *</label>
+            <input type="text" id="user-username-input" placeholder="Enter username" required>
+          </div>
+          <div class="form-group">
+            <label for="user-password-input">Password *</label>
+            <input type="password" id="user-password-input" placeholder="Enter password" required>
+          </div>
+          <div class="form-group">
+            <label for="user-role-select">Role</label>
+            <select id="user-role-select">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="user-cancel-btn">Cancel</button>
+        <button class="btn btn-primary" id="user-save-btn">Create User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

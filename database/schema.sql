@@ -1,0 +1,28 @@
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  role TEXT DEFAULT 'user' CHECK(role IN ('user','admin')),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS albums (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  artist TEXT NOT NULL,
+  cover_image TEXT,
+  description TEXT,
+  year INTEGER,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS songs (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  album_id INTEGER NOT NULL,
+  track_number INTEGER,
+  duration TEXT,
+  file_path TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (album_id) REFERENCES albums(id) ON DELETE CASCADE
+);

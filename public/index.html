@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Record Room — Your personal vinyl-inspired music collection. Login to explore your albums.">
+  <title>Record Room — Login</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💿</text></svg>">
+</head>
+<body>
+  <div class="login-page">
+    <!-- Floating vinyl decorations -->
+    <div class="login-bg-vinyl"></div>
+    <div class="login-bg-vinyl"></div>
+    <div class="login-bg-vinyl"></div>
+
+    <div class="login-card">
+      <div class="logo">
+        <div class="login-vinyl-icon"></div>
+        <h1>Record <span>Room</span></h1>
+        <p>Your Personal Music Vault</p>
+      </div>
+
+      <div id="login-alert" class="alert alert-error"></div>
+
+      <form id="login-form" autocomplete="off">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="login-btn">
+          <span class="btn-text">Enter the Room</span>
+          <div class="spinner" style="display:none;" id="login-spinner"></div>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>

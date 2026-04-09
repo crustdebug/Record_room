@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Player — Record Room</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💿</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body.album-player-page {
+            background: #1a0a0a;
+            font-family: 'DM Mono', monospace;
+            color: #d4a843;
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Theme support - inherit from main app */
+        body.theme-classic.album-player-page {
+            --accent: #e8a24e;
+        }
+
+        body.theme-dark.album-player-page {
+            --accent: #e8a24e;
+        }
+
+        body.theme-gallery.album-player-page {
+            --accent: #e8a24e;
+        }
+
+        body.theme-glass.album-player-page {
+            --accent: #00ecff;
+        }
+
+        body.theme-midnight.album-player-page {
+            --accent: #00ecff;
+        }
+
+        body.theme-royal.album-player-page {
+            --accent: #ffd700;
+        }
+
+        body.theme-golden.album-player-page {
+            --accent: #feada6;
+        }
+
+        body.theme-forest.album-player-page {
+            --accent: #4ee87a;
+        }
+
+        body.theme-brick.album-player-page {
+            --accent: #e8a24e;
+        }
+
+        body.theme-concrete.album-player-page {
+            --accent: #e8a24e;
+        }
+
+        body.theme-foryou.album-player-page {
+            --accent: #b88ca0;
+        }
+
+        .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #3d0d0d 0%, #1a0505 40%, #0d0202 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            transition: background 0.6s ease;
+        }
+
+        /* Theme backgrounds for album room */
+        body.theme-classic .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #d4c4a8 0%, #c4b08e 40%, #b09a78 100%);
+        }
+
+        body.theme-dark .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #1a1a25 0%, #0f0f18 40%, #05050a 100%);
+        }
+
+        body.theme-gallery .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #e8e8e8 0%, #d0d0d0 40%, #b8b8b8 100%);
+        }
+
+        body.theme-glass .album-room {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), 
+                        radial-gradient(ellipse at 50% 0%, #1e1e1e 0%, #0a0a0a 100%);
+        }
+
+        body.theme-midnight .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #0f1a2e 0%, #05050f 100%);
+        }
+
+        body.theme-royal .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #2d0505 0%, #1a0000 40%, #0a0000 100%);
+        }
+
+        body.theme-golden .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #ffecd2 0%, #fcb69f 40%, #e8a24e 100%);
+        }
+
+        body.theme-forest .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #0d1a10 0%, #050a06 100%);
+        }
+
+        body.theme-brick .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #5a3620 0%, #3d2618 40%, #2a1810 100%);
+        }
+
+        body.theme-concrete .album-room {
+            background: radial-gradient(ellipse at 50% 0%, #505050 0%, #3a3a3a 40%, #2a2a2a 100%);
+        }
+
+        body.theme-foryou .album-room {
+            background: linear-gradient(135deg, #0d0609 0%, #1a0f15 25%, #241621 50%, #2d1b26 75%, #3d2530 100%);
+        }
+
+        /* Theme-specific text and UI colors */
+        body.theme-classic .album-header,
+        body.theme-classic .back-btn,
+        body.theme-classic .album-logo,
+        body.theme-classic .shelf-label,
+        body.theme-classic .card-title,
+        body.theme-classic .card-artist,
+        body.theme-classic .card-duration,
+        body.theme-classic .np-title,
+        body.theme-classic .np-artist,
+        body.theme-classic .np-label,
+        body.theme-classic .vol-label,
+        body.theme-classic .time-row {
+            color: #3d3020;
+        }
+
+        body.theme-classic .back-btn {
+            border-color: rgba(61, 48, 32, 0.3);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        body.theme-classic .back-btn:hover {
+            border-color: rgba(61, 48, 32, 0.5);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        body.theme-classic .album-logo span {
+            color: #8b5e3c;
+        }
+
+        body.theme-classic .shelf {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(61, 48, 32, 0.2);
+        }
+
+        body.theme-classic .record-card {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(61, 48, 32, 0.2);
+        }
+
+        body.theme-classic .record-card:hover {
+            border-color: rgba(61, 48, 32, 0.5);
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        body.theme-classic .drop-zone {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(61, 48, 32, 0.3);
+        }
+
+        body.theme-classic .drop-zone.has-record {
+            border-color: rgba(61, 48, 32, 0.4);
+        }
+
+        body.theme-classic .controls {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(61, 48, 32, 0.2);
+        }
+
+        body.theme-classic .np-badge {
+            border-color: rgba(139, 94, 60, 0.5);
+            color: rgba(139, 94, 60, 0.8);
+        }
+
+        body.theme-classic .np-badge.playing {
+            color: #8b5e3c;
+            border-color: #8b5e3c;
+        }
+
+        body.theme-gallery .album-header,
+        body.theme-gallery .back-btn,
+        body.theme-gallery .album-logo,
+        body.theme-gallery .shelf-label,
+        body.theme-gallery .card-title,
+        body.theme-gallery .card-artist,
+        body.theme-gallery .card-duration,
+        body.theme-gallery .np-title,
+        body.theme-gallery .np-artist,
+        body.theme-gallery .np-label,
+        body.theme-gallery .vol-label,
+        body.theme-gallery .time-row {
+            color: #2a2a2a;
+        }
+
+        body.theme-gallery .back-btn {
+            border-color: rgba(42, 42, 42, 0.3);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        body.theme-gallery .back-btn:hover {
+            border-color: rgba(42, 42, 42, 0.5);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        body.theme-gallery .album-logo span {
+            color: #666;
+        }
+
+        body.theme-gallery .shelf {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(42, 42, 42, 0.2);
+        }
+
+        body.theme-gallery .record-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(42, 42, 42, 0.2);
+        }
+
+        body.theme-gallery .record-card:hover {
+            border-color: rgba(42, 42, 42, 0.4);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        body.theme-gallery .drop-zone {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(42, 42, 42, 0.3);
+        }
+
+        body.theme-gallery .drop-zone.has-record {
+            border-color: rgba(42, 42, 42, 0.4);
+        }
+
+        body.theme-gallery .controls {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(42, 42, 42, 0.2);
+        }
+
+        body.theme-gallery .np-badge {
+            border-color: rgba(102, 102, 102, 0.5);
+            color: rgba(102, 102, 102, 0.8);
+        }
+
+        body.theme-gallery .np-badge.playing {
+            color: #666;
+            border-color: #666;
+        }
+
+        body.theme-golden .album-header,
+        body.theme-golden .back-btn,
+        body.theme-golden .album-logo,
+        body.theme-golden .shelf-label,
+        body.theme-golden .card-title,
+        body.theme-golden .card-artist,
+        body.theme-golden .card-duration,
+        body.theme-golden .np-title,
+        body.theme-golden .np-artist,
+        body.theme-golden .np-label,
+        body.theme-golden .vol-label,
+        body.theme-golden .time-row {
+            color: #8b4513;
+        }
+
+        body.theme-golden .back-btn {
+            border-color: rgba(139, 69, 19, 0.3);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        body.theme-golden .back-btn:hover {
+            border-color: rgba(139, 69, 19, 0.5);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        body.theme-golden .album-logo span {
+            color: #d2691e;
+        }
+
+        body.theme-golden .shelf {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(139, 69, 19, 0.2);
+        }
+
+        body.theme-golden .record-card {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(139, 69, 19, 0.2);
+        }
+
+        body.theme-golden .record-card:hover {
+            border-color: rgba(139, 69, 19, 0.4);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        body.theme-golden .drop-zone {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(139, 69, 19, 0.3);
+        }
+
+        body.theme-golden .drop-zone.has-record {
+            border-color: rgba(139, 69, 19, 0.4);
+        }
+
+        body.theme-golden .controls {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(139, 69, 19, 0.2);
+        }
+
+        body.theme-golden .np-badge {
+            border-color: rgba(210, 105, 30, 0.5);
+            color: rgba(210, 105, 30, 0.8);
+        }
+
+        body.theme-golden .np-badge.playing {
+            color: #d2691e;
+            border-color: #d2691e;
+        }
+
+        body.theme-concrete .album-header,
+        body.theme-concrete .back-btn,
+        body.theme-concrete .album-logo,
+        body.theme-concrete .shelf-label,
+        body.theme-concrete .card-title,
+        body.theme-concrete .card-artist,
+        body.theme-concrete .card-duration,
+        body.theme-concrete .np-title,
+        body.theme-concrete .np-artist,
+        body.theme-concrete .np-label,
+        body.theme-concrete .vol-label,
+        body.theme-concrete .time-row {
+            color: #e0e0e0;
+        }
+
+        body.theme-concrete .back-btn {
+            border-color: rgba(224, 224, 224, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        body.theme-concrete .back-btn:hover {
+            border-color: rgba(224, 224, 224, 0.5);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        body.theme-concrete .album-logo span {
+            color: #b0b0b0;
+        }
+
+        body.theme-concrete .shelf {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(224, 224, 224, 0.2);
+        }
+
+        body.theme-concrete .record-card {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(224, 224, 224, 0.2);
+        }
+
+        body.theme-concrete .record-card:hover {
+            border-color: rgba(224, 224, 224, 0.4);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        body.theme-concrete .drop-zone {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(224, 224, 224, 0.3);
+        }
+
+        body.theme-concrete .drop-zone.has-record {
+            border-color: rgba(224, 224, 224, 0.4);
+        }
+
+        body.theme-concrete .controls {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(224, 224, 224, 0.2);
+        }
+
+        body.theme-concrete .np-badge {
+            border-color: rgba(176, 176, 176, 0.5);
+            color: rgba(176, 176, 176, 0.8);
+        }
+
+        body.theme-concrete .np-badge.playing {
+            color: #b0b0b0;
+            border-color: #b0b0b0;
+        }
+
+        body.theme-foryou .album-header,
+        body.theme-foryou .back-btn,
+        body.theme-foryou .album-logo,
+        body.theme-foryou .shelf-label,
+        body.theme-foryou .card-title,
+        body.theme-foryou .card-artist,
+        body.theme-foryou .card-duration,
+        body.theme-foryou .np-title,
+        body.theme-foryou .np-artist,
+        body.theme-foryou .np-label,
+        body.theme-foryou .vol-label,
+        body.theme-foryou .time-row {
+            color: #e8c4d4;
+        }
+
+        body.theme-foryou .back-btn {
+            border-color: rgba(232, 196, 212, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        body.theme-foryou .back-btn:hover {
+            border-color: rgba(232, 196, 212, 0.5);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        body.theme-foryou .album-logo span {
+            color: #b88ca0;
+        }
+
+        body.theme-foryou .shelf {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(184, 140, 160, 0.2);
+        }
+
+        body.theme-foryou .record-card {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(184, 140, 160, 0.2);
+        }
+
+        body.theme-foryou .record-card:hover {
+            border-color: rgba(184, 140, 160, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        body.theme-foryou .drop-zone {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(184, 140, 160, 0.3);
+        }
+
+        body.theme-foryou .drop-zone.has-record {
+            border-color: rgba(184, 140, 160, 0.4);
+        }
+
+        body.theme-foryou .controls {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(184, 140, 160, 0.2);
+        }
+
+        body.theme-foryou .np-badge {
+            border-color: rgba(184, 140, 160, 0.5);
+            color: rgba(184, 140, 160, 0.8);
+        }
+
+        body.theme-foryou .np-badge.playing {
+            color: #b88ca0;
+            border-color: #b88ca0;
+        }
+
+        body.theme-foryou .theme-btn-album {
+            color: #e8c4d4;
+            border-color: rgba(232, 196, 212, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        body.theme-foryou .theme-btn-album:hover {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(232, 196, 212, 0.5);
+        }
+
+        .album-room::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(45deg, transparent, transparent 28px, rgba(180, 60, 0, 0.03) 28px, rgba(180, 60, 0, 0.03) 30px),
+                repeating-linear-gradient(-45deg, transparent, transparent 28px, rgba(180, 60, 0, 0.03) 28px, rgba(180, 60, 0, 0.03) 30px);
+            pointer-events: none;
+        }
+
+        .album-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px 20px;
+            border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 168, 67, 0.2);
+            border-radius: 6px;
+            color: #d4a843;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .back-btn:hover {
+            border-color: rgba(212, 168, 67, 0.5);
+            background: rgba(40, 10, 10, 0.5);
+            transform: translateX(-4px);
+        }
+
+        .album-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            letter-spacing: 2px;
+            color: #f0c84a;
+            text-shadow: 0 0 20px rgba(240, 200, 74, 0.3);
+        }
+
+        .album-logo span {
+            color: #c0392b;
+        }
+
+        .theme-selector-album {
+            position: relative;
+        }
+
+        .theme-btn-album {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 220, 160, 0.2);
+            color: #d4a843;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .theme-btn-album:hover {
+            background: rgba(232, 162, 78, 0.2);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Theme-specific icon colors */
+        body.theme-classic .theme-btn-album {
+            color: #3d3020;
+            border-color: rgba(61, 48, 32, 0.3);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        body.theme-classic .theme-btn-album:hover {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(61, 48, 32, 0.5);
+        }
+
+        body.theme-gallery .theme-btn-album {
+            color: #2a2a2a;
+            border-color: rgba(42, 42, 42, 0.3);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        body.theme-gallery .theme-btn-album:hover {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(42, 42, 42, 0.5);
+        }
+
+        body.theme-golden .theme-btn-album {
+            color: #8b4513;
+            border-color: rgba(139, 69, 19, 0.3);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        body.theme-golden .theme-btn-album:hover {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(139, 69, 19, 0.5);
+        }
+
+        body.theme-concrete .theme-btn-album {
+            color: #e0e0e0;
+            border-color: rgba(224, 224, 224, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        body.theme-concrete .theme-btn-album:hover {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(224, 224, 224, 0.5);
+        }
+
+        .theme-dropdown-album {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: rgba(30, 24, 18, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 220, 160, 0.15);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 180px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .theme-dropdown-album::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .theme-dropdown-album::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        .theme-dropdown-album::-webkit-scrollbar-thumb {
+            background: rgba(232, 162, 78, 0.3);
+            border-radius: 3px;
+        }
+
+        .theme-dropdown-album::-webkit-scrollbar-thumb:hover {
+            background: rgba(232, 162, 78, 0.5);
+        }
+
+        .theme-dropdown-album.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .theme-option-album {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-option-album:hover {
+            background: rgba(232, 162, 78, 0.1);
+        }
+
+        .theme-option-album.active {
+            background: rgba(232, 162, 78, 0.15);
+            border-left: 3px solid var(--accent);
+        }
+
+        .main-area {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .shelf-section {
+            flex: 0 0 280px;
+        }
+
+        .shelf-label {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: rgba(212, 168, 67, 0.5);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .shelf {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 168, 67, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .shelf::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #5c3a1e, #8b5e3c, #5c3a1e);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .record-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 12px;
+            background: rgba(20, 6, 6, 0.8);
+            border: 1px solid rgba(212, 168, 67, 0.15);
+            border-radius: 6px;
+            cursor: grab;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .record-card:hover {
+            border-color: rgba(212, 168, 67, 0.5);
+            background: rgba(40, 10, 10, 0.9);
+            transform: translateX(4px);
+        }
+
+        .record-card.dragging {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+
+        .record-card.playing-card {
+            border-color: rgba(212, 168, 67, 0.6);
+            background: rgba(60, 20, 10, 0.9);
+        }
+
+        .mini-vinyl {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mini-vinyl svg {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-title {
+            font-size: 12px;
+            color: #e8c97a;
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-artist {
+            font-size: 10px;
+            color: rgba(212, 168, 67, 0.5);
+            margin-top: 2px;
+        }
+
+        .card-duration {
+            font-size: 10px;
+            color: rgba(212, 168, 67, 0.4);
+        }
+
+        .drag-hint {
+            text-align: center;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: rgba(212, 168, 67, 0.3);
+            margin-top: 8px;
+        }
+
+        .player-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .drop-zone {
+            width: 100%;
+            max-width: 520px;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            background: rgba(8, 2, 2, 0.9);
+            border: 2px dashed rgba(212, 168, 67, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: border-color 0.3s, background 0.3s;
+            overflow: hidden;
+        }
+
+        .drop-zone.drag-over {
+            border-color: rgba(212, 168, 67, 0.7);
+            background: rgba(30, 10, 5, 0.95);
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.1);
+        }
+
+        .drop-zone.has-record {
+            border-style: solid;
+            border-color: rgba(212, 168, 67, 0.15);
+        }
+
+        .turntable-body {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .platter {
+            width: 62%;
+            height: 62%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2a2a2a 0%, #1a1a1a 50%, #0f0f0f 100%);
+            border: 3px solid #333;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8), 0 4px 20px rgba(0, 0, 0, 0.6);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .platter::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            border-radius: 50%;
+            background: repeating-conic-gradient(rgba(255, 255, 255, 0.02) 0deg 1deg, transparent 1deg 3deg);
+        }
+
+        .vinyl-on-platter {
+            width: 88%;
+            height: 88%;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vinyl-on-platter svg {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .vinyl-on-platter.spinning {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-platter-text {
+            position: absolute;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .empty-platter-text .arrow {
+            font-size: 28px;
+            color: rgba(212, 168, 67, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .empty-platter-text p {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: rgba(212, 168, 67, 0.25);
+            margin-top: 8px;
+        }
+
+        .tonearm-hint {
+            position: absolute;
+            top: 15%;
+            right: 5%;
+            text-align: right;
+            pointer-events: none;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+
+        .tonearm-hint p {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: rgba(212, 168, 67, 0.6);
+            text-shadow: 0 0 10px rgba(212, 168, 67, 0.3);
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        .tonearm-container {
+            position: absolute;
+            top: 8%;
+            right: 10%;
+            width: 30%;
+            height: 50%;
+            transform-origin: 80% 10%;
+            transition: transform 0.6s ease-in-out;
+            cursor: grab;
+            z-index: 10;
+            user-select: none;
+            pointer-events: auto;
+        }
+
+        .tonearm-container svg {
+            pointer-events: none;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            transition: filter 0.2s ease;
+        }
+
+        .tonearm-container:hover svg {
+            filter: drop-shadow(0 4px 8px rgba(212, 168, 67, 0.4));
+        }
+
+        .tonearm-container:active {
+            cursor: grabbing;
+        }
+
+        .tonearm-container.arm-playing {
+            transform: rotate(-5deg); /* Rotated DOWN towards record */
+        }
+
+        .tonearm-container.arm-idle {
+            transform: rotate(-25deg); /* Default position UP and AWAY from record */
+        }
+
+        .tonearm-container.dragging {
+            transition: none !important; /* No delay while dragging */
+        }
+
+        .tonearm-container.dragging svg {
+            filter: drop-shadow(0 6px 12px rgba(212, 168, 67, 0.6));
+        }
+
+        .spindle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #888 0%, #444 100%);
+            border: 1px solid #222;
+            position: absolute;
+            z-index: 2;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .screw {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #777 0%, #444 100%);
+            border: 1px solid #222;
+        }
+
+        .controls {
+            width: 100%;
+            max-width: 520px;
+            background: rgba(8, 2, 2, 0.8);
+            border: 1px solid rgba(212, 168, 67, 0.1);
+            border-radius: 8px;
+            padding: 18px 20px;
+        }
+
+        .now-playing {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .np-label {
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: rgba(212, 168, 67, 0.4);
+            text-transform: uppercase;
+        }
+
+        .np-title {
+            font-size: 15px;
+            color: #f0c84a;
+            font-family: 'Playfair Display', serif;
+            margin-top: 3px;
+        }
+
+        .np-artist {
+            font-size: 10px;
+            color: rgba(212, 168, 67, 0.6);
+            margin-top: 2px;
+        }
+
+        .np-badge {
+            font-size: 9px;
+            padding: 3px 8px;
+            border: 1px solid rgba(192, 57, 43, 0.5);
+            color: rgba(192, 57, 43, 0.8);
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+
+        .np-badge.playing {
+            color: #c0392b;
+            border-color: #c0392b;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px; /* Increase total height for better clickability */
+            background: transparent;
+            border-radius: 2px;
+            margin-bottom: 6px;
+            overflow: visible;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: rgba(212, 168, 67, 0.15);
+            border-radius: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .progress-fill {
+            height: 4px;
+            background: linear-gradient(90deg, #c0392b, #d4a843);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+            position: relative;
+            z-index: 1;
+        }
+
+        .time-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: rgba(212, 168, 67, 0.4);
+        }
+
+        .vol-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(212, 168, 67, 0.08);
+        }
+
+        .vol-label {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: rgba(212, 168, 67, 0.4);
+            width: 30px;
+        }
+
+        .vol-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 2px;
+            background: rgba(212, 168, 67, 0.2);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .vol-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d4a843;
+            cursor: pointer;
+        }
+
+        .drop-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(212, 168, 67, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .drop-zone.drag-over .drop-overlay {
+            opacity: 1;
+        }
+
+        .drop-overlay-text {
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: rgba(212, 168, 67, 0.8);
+            text-transform: uppercase;
+        }
+
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            background: #08080d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(232, 162, 78, 0.1);
+            border-top-color: #e8a24e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="album-player-page">
+    <!-- Page Loader -->
+    <div class="page-loader" id="page-loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="album-room">
+        <header class="album-header">
+            <button class="back-btn" onclick="goBack()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                BACK TO WALL
+            </button>
+            <div class="album-logo">Record <span>Room</span></div>
+            <div class="theme-selector-album">
+                <button class="theme-btn-album" id="theme-btn" title="Change Theme">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                    </svg>
+                </button>
+                <div class="theme-dropdown-album" id="theme-dropdown">
+                    <div class="theme-option-album" data-theme="classic">
+                        <div class="theme-preview theme-preview-classic"></div>
+                        <span>Classic Warm</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="dark">
+                        <div class="theme-preview theme-preview-dark"></div>
+                        <span>Dark Night</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="gallery">
+                        <div class="theme-preview theme-preview-gallery"></div>
+                        <span>White Gallery</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="glass">
+                        <div class="theme-preview theme-preview-glass"></div>
+                        <span>Modern Glass</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="midnight">
+                        <div class="theme-preview theme-preview-midnight"></div>
+                        <span>Midnight Neon</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="royal">
+                        <div class="theme-preview theme-preview-royal"></div>
+                        <span>Royal Velvet</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="golden">
+                        <div class="theme-preview theme-preview-golden"></div>
+                        <span>Golden Hour</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="forest">
+                        <div class="theme-preview theme-preview-forest"></div>
+                        <span>Forest Mist</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="brick">
+                        <div class="theme-preview theme-preview-brick"></div>
+                        <span>Brick Wall</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="concrete">
+                        <div class="theme-preview theme-preview-concrete"></div>
+                        <span>Concrete</span>
+                    </div>
+                    <div class="theme-option-album" data-theme="foryou">
+                        <div class="theme-preview theme-preview-foryou"></div>
+                        <span>For You</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="shelf-section">
+                <div class="shelf-label" id="album-info">— Loading Album —</div>
+                <div class="shelf" id="shelf"></div>
+                <div class="drag-hint">↑ drag to turntable ↑</div>
+            </div>
+
+            <div class="player-section">
+                <div class="drop-zone" id="dropZone">
+                    <div class="turntable-body">
+                        <div class="screw" style="top:14px;left:14px"></div>
+                        <div class="screw" style="top:14px;right:14px"></div>
+                        <div class="screw" style="bottom:14px;left:14px"></div>
+                        <div class="screw" style="bottom:14px;right:14px"></div>
+
+                        <div class="platter" id="platter">
+                            <div class="spindle"></div>
+                            <div class="vinyl-on-platter" id="vinylOnPlatter"></div>
+                        </div>
+
+                        <div class="empty-platter-text" id="emptyState">
+                            <div class="arrow">⊙</div>
+                            <p>DROP VINYL HERE</p>
+                        </div>
+
+                        <div class="tonearm-hint" id="tonearmHint" style="display:none;">
+            <p>← Drag left onto record</p>
+                        </div>
+
+                        <div class="tonearm-container arm-idle" id="tonearm">
+                            <svg viewBox="0 0 80 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                                <circle cx="64" cy="18" r="11" fill="#3a3a3a" stroke="#555" stroke-width="1" />
+                                <circle cx="64" cy="18" r="5" fill="#666" stroke="#888" stroke-width="0.5" />
+                                <path d="M 64 28 Q 40 80 18 170" stroke="#8a8a8a" stroke-width="5" stroke-linecap="round" fill="none" />
+                                <path d="M 64 28 Q 40 80 18 170" stroke="#aaa" stroke-width="2" stroke-linecap="round" fill="none" />
+                                <line x1="18" y1="170" x2="8" y2="185" stroke="#777" stroke-width="3" stroke-linecap="round" />
+                                <circle cx="8" cy="186" r="3" fill="#c0392b" />
+                            </svg>
+                        </div>
+
+                        <div class="drop-overlay">
+                            <div class="drop-overlay-text">Release to Play</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <div class="now-playing">
+                        <div>
+                            <div class="np-label">Now Playing</div>
+                            <div class="np-title" id="npTitle">— No Record Loaded —</div>
+                            <div class="np-artist" id="npArtist">Drop a record onto the turntable</div>
+                        </div>
+                        <div class="np-badge" id="npBadge">IDLE</div>
+                    </div>
+                    <div class="progress-bar" id="progressBarContainer">
+                        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                    </div>
+                    <div class="time-row">
+                        <span id="currentTime">0:00</span>
+                        <span id="totalTime">—:——</span>
+                    </div>
+                    <div class="vol-row">
+                        <span class="vol-label">VOL</span>
+                        <input type="range" class="vol-slider" min="0" max="100" value="75" oninput="setVolume(this.value)">
+                        <span style="font-size:9px;color:rgba(212,168,67,0.4);width:24px;text-align:right" id="volVal">75</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/album-player.js"></script>
+</body>
+</html>
