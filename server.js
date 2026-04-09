@@ -67,4 +67,5 @@ initializeDatabase();
 
 app.listen(PORT, () => {
   console.log(`\n✦ Record Room is spinning at http://localhost:${PORT}\n`);
+  console.log(`✦ Session store: ${process.env.DATABASE_URL ? 'PostgreSQL' : 'Memory (not recommended)'}`);
 });
