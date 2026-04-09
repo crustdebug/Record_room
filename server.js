@@ -1,22 +1,35 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const { Pool } = require('pg');
 const path = require('path');
 const { initializeDatabase } = require('./database/db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ─── PostgreSQL Connection Pool for Sessions ──
+const pgPool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
+
 // ─── Middleware ───────────────────────────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
+  store: new pgSession({
+    pool: pgPool,
+    tableName: 'session',
+    createTableIfMissing: true
+  }),
   secret: process.env.SESSION_SECRET || 'fallback_secret',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
