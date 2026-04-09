@@ -361,7 +361,7 @@
     const idleRotation = -25;    // Tonearm AWAY from record (rotated up)
 
     // Get the tonearm rotation based on cursor position
-    function getTonearmAngle(clientX, clientY) {
+    function getTonearmAngle(clientX) {
       const rect = dropZone.getBoundingClientRect();
       const centerX = rect.left + rect.width * 0.5;
       
@@ -421,7 +421,7 @@
       }
       
       if (hasMoved) {
-        const rotation = getTonearmAngle(e.clientX, e.clientY);
+        const rotation = getTonearmAngle(e.clientX);
         tonearm.style.transform = `rotate(${rotation}deg)`;
         
         // Start playing when tonearm is moved to playing position (over record)
@@ -447,7 +447,7 @@
         // Only update position if user actually dragged (not just clicked)
         if (hasMoved) {
           // Get final rotation based on current mouse position
-          const finalRotation = getTonearmAngle(e.clientX, e.clientY);
+          const finalRotation = getTonearmAngle(e.clientX);
           
           // Keep the tonearm at its current position without snapping
           tonearm.style.transform = `rotate(${finalRotation}deg)`;
@@ -508,7 +508,7 @@
       }
       
       if (hasMoved) {
-        const rotation = getTonearmAngle(touch.clientX, touch.clientY);
+        const rotation = getTonearmAngle(touch.clientX);
         tonearm.style.transform = `rotate(${rotation}deg)`;
         
         if (rotation > -15 && !isPlaying) {
@@ -528,7 +528,7 @@
         if (hasMoved) {
           // Get final rotation based on last touch position
           const touch = e.changedTouches[0];
-          const finalRotation = getTonearmAngle(touch.clientX, touch.clientY);
+          const finalRotation = getTonearmAngle(touch.clientX);
           
           // Keep the tonearm at its current position without snapping
           tonearm.style.transform = `rotate(${finalRotation}deg)`;

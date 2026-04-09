@@ -1,0 +1,2 @@
+Immersive Login UI: Instead of a standard form, make the login page part of the Record Room experience. For example, the login form could look like a VIP backstage pass, a record store membership card, or a vintage amplifier faceplate.
+Persistent Mini-Player: Currently, playing music involves an interactive turntable. If a user wants to go back to the wall to browse while the music is playing, adding a persistent, slide-up mini-player (perhaps styled like a vintage cassette deck or a minimal tonearm) would keep playback controls accessible without interrupting their browsing

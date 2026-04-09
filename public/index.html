@@ -15,31 +15,55 @@
     <div class="login-bg-vinyl"></div>
     <div class="login-bg-vinyl"></div>
 
-    <div class="login-card">
-      <div class="logo">
-        <div class="login-vinyl-icon"></div>
-        <h1>Record <span>Room</span></h1>
-        <p>Your Personal Music Vault</p>
+    <!-- VIP Backstage Pass Card -->
+    <div class="backstage-pass">
+      <!-- Pass Header -->
+      <div class="pass-header">
+        <div class="pass-logo">
+          <div class="vinyl-badge">
+            <svg viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="2"/>
+              <circle cx="50" cy="50" r="35" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              <circle cx="50" cy="50" r="22" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+              <circle cx="50" cy="50" r="8" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="pass-title">
+            <h1>RECORD <span>ROOM</span></h1>
+            <div class="pass-subtitle">BACKSTAGE ACCESS</div>
+          </div>
+        </div>
+        <div class="pass-type">VIP</div>
       </div>
 
-      <div id="login-alert" class="alert alert-error"></div>
+      <!-- Pass Body -->
+      <div class="pass-body">
+        <div class="pass-barcode"></div>
+        
+        <div id="login-alert" class="alert alert-error"></div>
 
-      <form id="login-form" autocomplete="off">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus>
+        <form id="login-form" autocomplete="off">
+          <div class="pass-field">
+            <label for="username">MEMBER ID</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus>
+          </div>
+
+          <div class="pass-field">
+            <label for="password">ACCESS CODE</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          </div>
+
+          <button type="submit" class="pass-entry-btn" id="login-btn">
+            <span class="btn-text">GRANT ACCESS</span>
+            <div class="spinner" style="display:none;" id="login-spinner"></div>
+          </button>
+        </form>
+
+        <div class="pass-footer">
+          <div class="pass-serial">PASS #RR-2024-VIP</div>
+          <div class="pass-warning">⚠ NON-TRANSFERABLE</div>
         </div>
-
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block" id="login-btn">
-          <span class="btn-text">Enter the Room</span>
-          <div class="spinner" style="display:none;" id="login-spinner"></div>
-        </button>
-      </form>
+      </div>
     </div>
   </div>
 
