@@ -12,10 +12,19 @@ const PORT = process.env.PORT || 3000;
 // ─── PostgreSQL Connection Pool for Sessions ──
 const pgPool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+});
+
+// Handle pool errors
+pgPool.on('error', (err) => {
+  console.error('Unexpected error on idle PostgreSQL client', err);
 });
 
 // ─── Middleware ───────────────────────────────
+app.set('trust proxy', 1); // Trust first proxy (Vercel/Render)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -31,8 +40,10 @@ app.use(session({
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
+  },
+  proxy: process.env.NODE_ENV === 'production' // Trust proxy in production
 }));
 
 // ─── Static Files ─────────────────────────────
