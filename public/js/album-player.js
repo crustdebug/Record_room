@@ -17,7 +17,9 @@
 
   // ─── DOM ────────────────────────────────────
   const loader = document.getElementById('page-loader');
-  const albumInfo = document.getElementById('album-info');
+  const albumTitle = document.getElementById('album-title');
+  const albumArtist = document.getElementById('album-artist');
+  const albumDescription = document.getElementById('album-description');
   const shelf = document.getElementById('shelf');
   const dropZone = document.getElementById('dropZone');
   const emptyState = document.getElementById('emptyState');
@@ -84,13 +86,22 @@
       songs = data.songs || [];
 
       // Update album info
-      albumInfo.textContent = `— ${albumData.title} by ${albumData.artist} —`;
+      if (albumTitle) albumTitle.textContent = albumData.title;
+      if (albumArtist) albumArtist.textContent = `by ${albumData.artist}`;
+      if (albumDescription) {
+        albumDescription.textContent = albumData.description || 'No description available';
+        if (!albumData.description) {
+          albumDescription.style.display = 'none';
+        }
+      }
 
       // Build shelf with songs
       buildShelf();
     } catch (err) {
       console.error('Failed to load album:', err);
-      albumInfo.textContent = '— Error Loading Album —';
+      if (albumTitle) albumTitle.textContent = 'Error Loading Album';
+      if (albumArtist) albumArtist.textContent = '';
+      if (albumDescription) albumDescription.textContent = '';
     }
   }
 
@@ -120,8 +131,14 @@
           <div class="card-artist">Track ${trackNum}</div>
         </div>
         <div class="card-duration">${duration}</div>
+        <button class="mobile-play-btn" aria-label="Play ${escapeHtml(song.title)}">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
       `;
       
+      // Desktop: Drag and drop
       card.addEventListener('dragstart', (e) => {
         dragSongId = song.id;
         card.classList.add('dragging');
@@ -130,6 +147,38 @@
       
       card.addEventListener('dragend', () => {
         card.classList.remove('dragging');
+      });
+      
+      // Mobile: Tap to play
+      const playBtn = card.querySelector('.mobile-play-btn');
+      playBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        loadSong(song);
+        
+        // Auto-play on mobile after loading
+        setTimeout(() => {
+          tonearm.style.transform = '';
+          tonearm.classList.remove('arm-idle');
+          tonearm.classList.add('arm-playing');
+          startPlayback();
+        }, 300);
+      });
+      
+      // Also allow tapping the card itself on mobile
+      card.addEventListener('click', (e) => {
+        // Only trigger on mobile (when dragging is not practical)
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          loadSong(song);
+          
+          // Auto-play on mobile after loading
+          setTimeout(() => {
+            tonearm.style.transform = '';
+            tonearm.classList.remove('arm-idle');
+            tonearm.classList.add('arm-playing');
+            startPlayback();
+          }, 300);
+        }
       });
       
       shelf.appendChild(card);

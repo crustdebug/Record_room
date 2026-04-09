@@ -706,15 +706,9 @@ body.room-page {
   right: 20px;
 }
 
-/* Wall indicators (dots) */
+/* Wall indicators (dots) - HIDDEN */
 .wall-indicators {
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  z-index: 100;
+  display: none !important;
 }
 
 .wall-dot {
@@ -1498,7 +1492,7 @@ body.theme-foryou .wall-surface {
 /* Album label on wall below frame */
 .album-label {
   position: absolute;
-  bottom: -42px;
+  bottom: -32px;
   left: 50%;
   transform: translateX(-50%) scale(0.9);
   text-align: center;
@@ -1512,23 +1506,22 @@ body.theme-foryou .wall-surface {
 .album-card:hover .album-label {
   opacity: 1;
   transform: translateX(-50%) scale(1);
-  bottom: -46px;
+  bottom: -36px;
 }
 
 .album-label h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   margin-bottom: 2px;
   transition: all 0.3s ease;
+  letter-spacing: 0.02em;
 }
 
 .album-label .artist {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  font-weight: 500;
+  display: none;
 }
 
 /* Theme-specific label enhancements */
@@ -1605,26 +1598,13 @@ body.theme-foryou .album-label .artist { color: #b88ca0; }
 .wall-nav-prev { left: 16px; }
 .wall-nav-next { right: 16px; }
 
-/* ─── Wall Indicator Dots ────────────────────── */
+/* ─── Wall Indicator Dots (HIDDEN - removed per user request) ────────────────────── */
 .wall-indicators {
-  position: absolute;
-  bottom: 96px; /* above floor */
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  z-index: 50;
-  padding: 8px 16px;
-  background: rgba(30, 24, 18, 0.6);
-  backdrop-filter: blur(8px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 220, 160, 0.1);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  display: none !important;
 }
 
 .room-container:hover .wall-indicators {
-  opacity: 1;
+  display: none !important;
 }
 
 .wall-dot {
@@ -1715,7 +1695,6 @@ body.theme-foryou .album-label .artist { color: #b88ca0; }
   .wall-nav-btn { width: 36px; height: 36px; font-size: 1rem; }
   .room-floor { height: 50px; }
   .wall-viewport { bottom: 50px; }
-  .wall-indicators { bottom: 60px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2634,14 +2613,231 @@ body.theme-foryou .album-label .artist { color: #b88ca0; }
   pointer-events: none;
 }
 
-/* ─── Responsive ─────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN — Mobile Optimizations
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Hide mobile menu toggle on desktop */
+.mobile-menu-toggle {
+  display: none;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* ─── Tablet & Small Desktop (768px - 1024px) ─── */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0 24px;
+  }
+
+  .navbar-search {
+    max-width: 400px;
+    margin: 0 20px;
+  }
+
+  .wall-page {
+    padding: 50px 60px 40px;
+    gap: 32px;
+  }
+
+  .desk-interface {
+    padding: 0 40px;
+    gap: 30px;
+  }
+
+  .admin-album-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* ─── Tablet Portrait (768px and below) ─────── */
 @media (max-width: 768px) {
-  .gallery-container {
-    padding: 80px 16px 140px;
+  /* Mobile menu toggle button */
+  .mobile-menu-toggle {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    width: 44px;
+    height: 44px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 400;
+    transition: all var(--transition-fast);
+  }
+
+  .mobile-menu-toggle:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .mobile-menu-toggle svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Sidebar overlay for mobile */
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 250;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-fast);
+  }
+
+  .sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Navbar adjustments */
+  .navbar {
+    padding: 0 16px;
+    height: 60px;
+  }
+
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+
+  .navbar-search {
+    max-width: 300px;
+    margin: 0 16px;
+  }
+
+  #search-input {
+    font-size: 14px;
+    padding: 9px 36px 9px 36px;
+  }
+
+  .navbar-user {
+    font-size: 0.8rem;
+  }
+
+  .theme-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .theme-dropdown {
+    min-width: 160px;
+  }
+
+  /* Wall gallery adjustments */
+  .wall-page {
+    padding: 40px 40px 30px;
+    gap: 28px;
+  }
+
+  .album-card {
+    max-width: 180px;
+  }
+
+  .wall-nav-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .wall-nav-prev {
+    left: 16px;
+  }
+
+  .wall-nav-next {
+    right: 16px;
+  }
+
+  /* Desk interface adjustments */
+  .room-floor {
+    height: 70px;
+  }
+
+  .wall-viewport {
+    bottom: 70px;
+  }
+
+  .wall-surface {
+    bottom: 70px;
+  }
+
+  .desk-interface-container {
+    height: 70px;
+  }
+
+  .desk-interface {
+    height: 70px;
+    padding: 0 30px;
+    gap: 20px;
+  }
+
+  .desk-info {
+    min-width: 150px;
+  }
+
+  .desk-title {
+    font-size: 0.85rem;
+  }
+
+  .desk-artist {
+    font-size: 0.68rem;
+  }
+
+  .desk-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .desk-btn-play {
+    width: 46px;
+    height: 46px;
+  }
+
+  .desk-btn-play svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .desk-controls {
+    gap: 18px;
+  }
+
+  .desk-progress {
+    gap: 12px;
+  }
+
+  .desk-time {
+    font-size: 0.65rem;
+    width: 40px;
+  }
+
+  .desk-volume {
+    min-width: 120px;
+  }
+
+  .desk-volume input[type="range"] {
+    width: 80px;
+  }
+
+  /* Admin panel adjustments */
+  .mobile-menu-toggle {
+    display: flex;
   }
 
   .sidebar {
     transform: translateX(-100%);
+    position: fixed;
+    z-index: 300;
   }
 
   .sidebar.open {
@@ -2653,28 +2849,760 @@ body.theme-foryou .album-label .artist { color: #b88ca0; }
     padding: 20px;
   }
 
+  .admin-album-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .panel-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* Modal adjustments */
+  .modal {
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+  }
+
   .modal-header {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    gap: 8px;
   }
 
-  .player-bar-info { min-width: auto; max-width: 150px; }
-  .player-volume { display: none; }
-
-  .navbar {
-    padding: 0 16px;
+  .modal-body {
+    padding: 24px;
   }
 
+  .admin-modal .modal-body {
+    padding: 24px;
+  }
+
+  .admin-modal .modal-footer {
+    padding: 12px 24px 20px;
+    flex-wrap: wrap;
+  }
+
+  /* Player bar adjustments */
+  .player-bar-info {
+    min-width: auto;
+    max-width: 150px;
+  }
+
+  .player-volume {
+    display: none;
+  }
+
+  /* Login page adjustments */
   .login-card {
     margin: 20px;
     padding: 36px 24px;
+    max-width: 380px;
+  }
+
+  .login-card .logo h1 {
+    font-size: 1.8rem;
+  }
+
+  .login-vinyl-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  /* Form adjustments */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px; /* Prevent iOS zoom */
+    padding: 12px 14px;
+  }
+
+  /* Table adjustments */
+  .songs-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table {
+    font-size: 0.85rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  .data-table th:first-child,
+  .data-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--bg-surface);
+    z-index: 1;
+  }
+
+  /* Make action buttons stack on mobile */
+  .data-table .card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .data-table .btn-sm {
+    width: 100%;
+    min-width: 60px;
+  }
+
+  /* Toast notifications */
+  .toast-container {
+    top: 16px;
+    right: 16px;
+    left: 16px;
+  }
+
+  .toast {
+    min-width: auto;
+    width: 100%;
   }
 }
 
-@media (max-width: 480px) {
+/* ─── Mobile Landscape & Small Tablets (640px and below) ─── */
+@media (max-width: 640px) {
+  .navbar-search {
+    max-width: 200px;
+    margin: 0 12px;
+  }
+
+  #search-input {
+    font-size: 13px;
+    padding: 8px 32px 8px 32px;
+  }
+
+  .search-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .navbar-actions {
+    gap: 12px;
+  }
+
+  .wall-page {
+    padding: 30px 30px 25px;
+    gap: 24px;
+  }
+
+  .album-card {
+    max-width: 160px;
+  }
+
+  .desk-interface {
+    padding: 0 20px;
+    gap: 16px;
+  }
+
+  .desk-info {
+    min-width: 120px;
+  }
+
+  .desk-progress {
+    max-width: 300px;
+  }
+
+  .admin-album-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
   .stats-grid {
-    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-icon {
+    font-size: 1.8rem;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+  }
+}
+
+/* ─── Mobile Portrait (480px and below) ────── */
+@media (max-width: 480px) {
+  /* Navbar mobile optimization */
+  .navbar {
+    padding: 0 12px;
+    height: 56px;
+  }
+
+  .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .navbar-search {
+    display: none; /* Hide search on very small screens, can be toggled */
+  }
+
+  .navbar-actions {
+    gap: 8px;
+  }
+
+  .theme-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .theme-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .navbar-user {
+    display: none; /* Hide username on very small screens */
+  }
+
+  /* Wall gallery mobile optimization */
+  .wall-page {
+    padding: 24px 20px 20px;
+    gap: 20px;
+  }
+
+  .album-card {
+    max-width: 140px;
+  }
+
+  .wall-nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .wall-nav-prev {
+    left: 8px;
+  }
+
+  .wall-nav-next {
+    right: 8px;
+  }
+
+  .wall-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* Desk interface mobile optimization */
+  .room-floor {
+    height: 60px;
+  }
+
+  .room-floor::before {
+    height: 10px;
+    top: -10px;
+  }
+
+  .wall-viewport {
+    bottom: 60px;
+  }
+
+  .wall-surface {
+    bottom: 60px;
+  }
+
+  .desk-interface-container {
+    height: 60px;
+  }
+
+  .desk-interface {
+    height: 60px;
+    padding: 0 12px;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+
+  .desk-info {
+    min-width: 100px;
+    max-width: 120px;
+  }
+
+  .desk-title {
+    font-size: 0.75rem;
+  }
+
+  .desk-artist {
+    font-size: 0.62rem;
+  }
+
+  .desk-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .desk-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .desk-btn-play {
+    width: 42px;
+    height: 42px;
+  }
+
+  .desk-btn-play svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .desk-controls {
+    gap: 12px;
+  }
+
+  .desk-progress {
+    gap: 8px;
+    max-width: 200px;
+  }
+
+  .desk-time {
+    font-size: 0.6rem;
+    width: 35px;
+  }
+
+  .desk-progress-bar {
+    height: 3px;
+  }
+
+  .desk-volume {
+    display: none; /* Hide volume control on mobile */
+  }
+
+  /* Admin panel mobile optimization */
+  .admin-main {
+    padding: 16px;
+  }
+
+  .panel-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .admin-album-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  /* Modal mobile optimization */
+  .modal {
+    width: 95%;
+    max-width: none;
+    max-height: 90vh;
+    margin: 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .modal-close {
+    width: 32px;
+    height: 32px;
+  }
+
+  .admin-modal .modal-body {
+    padding: 20px;
+  }
+
+  .admin-modal .modal-footer {
+    padding: 12px 20px 16px;
+  }
+
+  /* Login page mobile optimization */
+  .login-card {
+    margin: 16px;
+    padding: 32px 20px;
+    max-width: 100%;
+  }
+
+  .login-card .logo h1 {
+    font-size: 1.6rem;
+  }
+
+  .login-card .logo p {
+    font-size: 0.75rem;
+  }
+
+  .login-vinyl-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    font-size: 0.75rem;
+  }
+
+  .btn {
+    padding: 12px 24px;
+    font-size: 0.85rem;
+  }
+
+  /* Table mobile optimization */
+  .songs-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table {
+    font-size: 0.8rem;
+    min-width: 600px; /* Force horizontal scroll for tables */
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+
+  .data-table th:first-child,
+  .data-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: var(--bg-surface);
+    z-index: 2;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Action buttons in tables */
+  .data-table .card-actions,
+  .data-table td:last-child {
+    white-space: nowrap;
+  }
+
+  .data-table .btn-sm {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  /* Song filter dropdown */
+  #song-album-filter {
+    font-size: 14px;
+  }
+
+  /* Toast notifications mobile */
+  .toast-container {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+  }
+
+  /* Theme dropdown mobile */
+  .theme-dropdown {
+    right: -8px;
+    min-width: 150px;
+    max-height: 300px;
+  }
+
+  .theme-option {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+
+  .theme-preview {
+    width: 28px;
+    height: 28px;
+  }
+
+  .theme-option span {
+    font-size: 0.8rem;
+  }
+
+  /* Upload zone mobile */
+  .upload-zone {
+    padding: 32px 16px;
+  }
+
+  .upload-zone svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .upload-zone h4 {
+    font-size: 0.9rem;
+  }
+
+  .upload-zone p {
+    font-size: 0.75rem;
+  }
+}
+
+/* ─── Mobile Table Cards (Hidden by default) ─── */
+.mobile-table-cards {
+  display: none;
+}
+
+/* ─── Mobile Card View for Tables (640px and below) ─── */
+@media (max-width: 640px) {
+  /* Hide table, show cards on small mobile */
+  .data-table {
+    display: none;
+  }
+
+  .mobile-table-cards {
+    display: block;
+  }
+
+  .mobile-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all var(--transition-fast);
+  }
+
+  .mobile-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+
+  .mobile-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mobile-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .mobile-card-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .mobile-card-id {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .mobile-card-body {
+    margin-bottom: 12px;
+  }
+
+  .mobile-card-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.85rem;
+  }
+
+  .mobile-card-label {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .mobile-card-value {
+    color: var(--text-primary);
+    text-align: right;
+  }
+
+  .mobile-card-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .mobile-card-actions .btn-sm {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ─── Extra Small Mobile (360px and below) ───── */
+@media (max-width: 360px) {
+  .navbar {
+    padding: 0 8px;
+  }
+
+  .navbar-brand {
+    font-size: 0.9rem;
+  }
+
+  .wall-page {
+    padding: 20px 16px 16px;
+    gap: 16px;
+  }
+
+  .album-card {
+    max-width: 120px;
+  }
+
+  .desk-interface {
+    padding: 0 8px;
+    gap: 8px;
+  }
+
+  .desk-info {
+    min-width: 80px;
+    max-width: 100px;
+  }
+
+  .desk-title {
+    font-size: 0.7rem;
+  }
+
+  .desk-artist {
+    font-size: 0.58rem;
+  }
+
+  .desk-progress {
+    max-width: 150px;
+    gap: 6px;
+  }
+
+  .desk-time {
+    font-size: 0.55rem;
+    width: 32px;
+  }
+
+  .login-card {
+    margin: 12px;
+    padding: 28px 16px;
+  }
+
+  .login-card .logo h1 {
+    font-size: 1.4rem;
+  }
+
+  .modal {
+    margin: 12px;
+  }
+}
+
+/* ─── Touch-friendly enhancements ────────────── */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch targets for mobile */
+  .btn {
+    min-height: 44px;
+  }
+
+  .wall-nav-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .desk-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .theme-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .wall-dot {
+    min-width: 12px;
+    min-height: 12px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .album-card:hover {
+    transform: none;
+  }
+
+  .album-card:active {
+    transform: scale(0.98);
+  }
+
+  .btn:hover::after {
+    opacity: 0;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ─── Landscape orientation optimizations ────── */
+@media (max-height: 600px) and (orientation: landscape) {
+  .room-floor {
+    height: 50px;
+  }
+
+  .wall-viewport {
+    bottom: 50px;
+  }
+
+  .wall-surface {
+    bottom: 50px;
+  }
+
+  .desk-interface-container {
+    height: 50px;
+  }
+
+  .desk-interface {
+    height: 50px;
+    padding: 0 16px;
+  }
+
+  .wall-page {
+    padding: 20px 40px 15px;
+  }
+
+  .modal {
+    max-height: 95vh;
   }
 }
 

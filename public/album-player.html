@@ -672,6 +672,37 @@
             margin-bottom: 16px;
         }
 
+        .album-details {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 168, 67, 0.1);
+            border-radius: 8px;
+        }
+
+        .album-details-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f0c84a;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px rgba(240, 200, 74, 0.3);
+        }
+
+        .album-details-artist {
+            font-size: 0.95rem;
+            color: rgba(212, 168, 67, 0.8);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .album-details-description {
+            font-size: 0.85rem;
+            color: rgba(212, 168, 67, 0.6);
+            line-height: 1.5;
+            font-style: italic;
+        }
+
         .shelf {
             display: flex;
             flex-direction: column;
@@ -723,6 +754,32 @@
         .record-card.playing-card {
             border-color: rgba(212, 168, 67, 0.6);
             background: rgba(60, 20, 10, 0.9);
+        }
+
+        .mobile-play-btn {
+            display: none;
+            width: 32px;
+            height: 32px;
+            background: rgba(212, 168, 67, 0.2);
+            border: 1px solid rgba(212, 168, 67, 0.4);
+            border-radius: 50%;
+            color: rgba(212, 168, 67, 0.8);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .mobile-play-btn:hover {
+            background: rgba(212, 168, 67, 0.3);
+            border-color: rgba(212, 168, 67, 0.6);
+            color: rgba(212, 168, 67, 1);
+        }
+
+        .mobile-play-btn svg {
+            width: 16px;
+            height: 16px;
         }
 
         .mini-vinyl {
@@ -1152,6 +1209,579 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+
+        /* ═══════════════════════════════════════════════════════════════
+           ALBUM PLAYER RESPONSIVE DESIGN — Mobile Optimizations
+           ═══════════════════════════════════════════════════════════════ */
+
+        /* ─── Tablet & Small Desktop (1024px and below) ─── */
+        @media (max-width: 1024px) {
+            .main-area {
+                gap: 30px;
+            }
+
+            .shelf-section {
+                flex: 0 0 240px;
+            }
+
+            .drop-zone {
+                max-width: 450px;
+            }
+
+            .controls {
+                max-width: 450px;
+            }
+        }
+
+        /* ─── Tablet Portrait (768px and below) ─────── */
+        @media (max-width: 768px) {
+            .mobile-play-btn {
+                display: flex;
+            }
+
+            .record-card {
+                cursor: pointer;
+            }
+
+            .drag-hint {
+                display: none;
+            }
+
+            .album-room {
+                padding: 16px;
+            }
+
+            .album-header {
+                padding: 0 8px 16px;
+                margin-bottom: 24px;
+            }
+
+            .album-logo {
+                font-size: 20px;
+            }
+
+            .back-btn {
+                font-size: 11px;
+                padding: 7px 14px;
+            }
+
+            .main-area {
+                flex-direction: column;
+                gap: 24px;
+                align-items: center;
+            }
+
+            .shelf-section {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: 450px;
+                order: 2;
+            }
+
+            .shelf {
+                max-height: 300px;
+            }
+
+            .shelf-label::after {
+                content: ' — Tap to Play';
+                color: rgba(212, 168, 67, 0.6);
+                font-size: 9px;
+            }
+
+            .player-section {
+                order: 1;
+                width: 100%;
+            }
+
+            .drop-zone {
+                max-width: 400px;
+            }
+
+            .controls {
+                max-width: 400px;
+            }
+
+            .drag-hint {
+                text-align: center;
+                margin-top: 12px;
+            }
+        }
+
+        /* ─── Mobile Landscape & Small Tablets (640px and below) ─── */
+        @media (max-width: 640px) {
+            .album-room {
+                padding: 12px;
+            }
+
+            .album-header {
+                padding: 0 6px 14px;
+                margin-bottom: 20px;
+            }
+
+            .album-logo {
+                font-size: 18px;
+            }
+
+            .back-btn {
+                font-size: 10px;
+                padding: 6px 12px;
+                gap: 6px;
+            }
+
+            .back-btn svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            .theme-btn-album {
+                width: 32px;
+                height: 32px;
+            }
+
+            .theme-btn-album svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .theme-dropdown-album {
+                min-width: 160px;
+                max-height: 350px;
+            }
+
+            .theme-option-album {
+                padding: 8px 10px;
+                gap: 10px;
+            }
+
+            .shelf-section {
+                max-width: 380px;
+            }
+
+            .shelf {
+                max-height: 250px;
+                padding: 14px;
+            }
+
+            .record-card {
+                padding: 8px 10px;
+                gap: 12px;
+            }
+
+            .mini-vinyl {
+                width: 38px;
+                height: 38px;
+            }
+
+            .mini-vinyl svg {
+                width: 38px;
+                height: 38px;
+            }
+
+            .card-title {
+                font-size: 11px;
+            }
+
+            .card-artist {
+                font-size: 9px;
+            }
+
+            .card-duration {
+                font-size: 9px;
+            }
+
+            .drop-zone {
+                max-width: 350px;
+            }
+
+            .controls {
+                max-width: 350px;
+                padding: 16px 18px;
+            }
+
+            .np-title {
+                font-size: 14px;
+            }
+
+            .np-artist {
+                font-size: 9px;
+            }
+
+            .np-badge {
+                font-size: 8px;
+                padding: 2px 7px;
+            }
+        }
+
+        /* ─── Mobile Portrait (480px and below) ────── */
+        @media (max-width: 480px) {
+            .album-room {
+                padding: 10px;
+            }
+
+            .album-header {
+                padding: 0 4px 12px;
+                margin-bottom: 16px;
+            }
+
+            .album-logo {
+                font-size: 16px;
+                letter-spacing: 1px;
+            }
+
+            .back-btn {
+                font-size: 9px;
+                padding: 5px 10px;
+                gap: 4px;
+            }
+
+            .back-btn svg {
+                width: 12px;
+                height: 12px;
+            }
+
+            .theme-btn-album {
+                width: 30px;
+                height: 30px;
+            }
+
+            .theme-btn-album svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .theme-dropdown-album {
+                min-width: 150px;
+                right: -4px;
+            }
+
+            .theme-option-album {
+                padding: 7px 9px;
+                gap: 8px;
+            }
+
+            .theme-preview {
+                width: 28px;
+                height: 28px;
+            }
+
+            .theme-option-album span {
+                font-size: 11px;
+            }
+
+            .main-area {
+                gap: 20px;
+            }
+
+            .shelf-section {
+                max-width: 100%;
+            }
+
+            .shelf-label {
+                font-size: 9px;
+                letter-spacing: 2px;
+                margin-bottom: 12px;
+            }
+
+            .album-details {
+                padding: 12px;
+                margin-bottom: 20px;
+            }
+
+            .album-details-title {
+                font-size: 1.2rem;
+            }
+
+            .album-details-artist {
+                font-size: 0.85rem;
+                margin-bottom: 10px;
+            }
+
+            .album-details-description {
+                font-size: 0.8rem;
+            }
+
+            .shelf {
+                max-height: 220px;
+                padding: 12px;
+                gap: 12px;
+            }
+
+            .record-card {
+                padding: 7px 9px;
+                gap: 10px;
+            }
+
+            .mini-vinyl {
+                width: 36px;
+                height: 36px;
+            }
+
+            .mini-vinyl svg {
+                width: 36px;
+                height: 36px;
+            }
+
+            .card-title {
+                font-size: 10px;
+            }
+
+            .card-artist {
+                font-size: 8px;
+            }
+
+            .card-duration {
+                font-size: 8px;
+            }
+
+            .drag-hint {
+                font-size: 8px;
+                letter-spacing: 1.5px;
+                margin-top: 10px;
+            }
+
+            .drop-zone {
+                max-width: 100%;
+                aspect-ratio: 1;
+            }
+
+            .tonearm-container {
+                width: 32%;
+                height: 48%;
+            }
+
+            .tonearm-hint p {
+                font-size: 10px;
+                letter-spacing: 1.5px;
+            }
+
+            .empty-platter-text .arrow {
+                font-size: 24px;
+            }
+
+            .empty-platter-text p {
+                font-size: 9px;
+                letter-spacing: 1.5px;
+            }
+
+            .controls {
+                max-width: 100%;
+                padding: 14px 16px;
+            }
+
+            .now-playing {
+                margin-bottom: 12px;
+            }
+
+            .np-label {
+                font-size: 8px;
+                letter-spacing: 2px;
+            }
+
+            .np-title {
+                font-size: 13px;
+            }
+
+            .np-artist {
+                font-size: 8px;
+            }
+
+            .np-badge {
+                font-size: 7px;
+                padding: 2px 6px;
+            }
+
+            .progress-bar {
+                height: 18px;
+                margin-bottom: 5px;
+            }
+
+            .progress-bar::before {
+                height: 3px;
+            }
+
+            .progress-fill {
+                height: 3px;
+            }
+
+            .time-row {
+                font-size: 8px;
+            }
+
+            .vol-row {
+                margin-top: 12px;
+                padding-top: 12px;
+                gap: 8px;
+            }
+
+            .vol-label {
+                font-size: 8px;
+                letter-spacing: 1.5px;
+                width: 26px;
+            }
+
+            .vol-slider {
+                height: 2px;
+            }
+
+            .vol-slider::-webkit-slider-thumb {
+                width: 10px;
+                height: 10px;
+            }
+
+            #volVal {
+                font-size: 8px !important;
+                width: 20px !important;
+            }
+
+            .drop-overlay-text {
+                font-size: 11px;
+                letter-spacing: 2px;
+            }
+        }
+
+        /* ─── Extra Small Mobile (360px and below) ───── */
+        @media (max-width: 360px) {
+            .album-room {
+                padding: 8px;
+            }
+
+            .album-header {
+                padding: 0 2px 10px;
+                margin-bottom: 14px;
+            }
+
+            .album-logo {
+                font-size: 14px;
+            }
+
+            .back-btn {
+                font-size: 8px;
+                padding: 4px 8px;
+            }
+
+            .shelf {
+                max-height: 200px;
+                padding: 10px;
+                gap: 10px;
+            }
+
+            .record-card {
+                padding: 6px 8px;
+                gap: 8px;
+            }
+
+            .mini-vinyl {
+                width: 32px;
+                height: 32px;
+            }
+
+            .mini-vinyl svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            .card-title {
+                font-size: 9px;
+            }
+
+            .card-artist,
+            .card-duration {
+                font-size: 7px;
+            }
+
+            .controls {
+                padding: 12px 14px;
+            }
+
+            .np-title {
+                font-size: 12px;
+            }
+
+            .np-artist {
+                font-size: 7px;
+            }
+        }
+
+        /* ─── Touch-friendly enhancements ────────────── */
+        @media (hover: none) and (pointer: coarse) {
+            .back-btn {
+                min-height: 36px;
+            }
+
+            .theme-btn-album {
+                min-width: 40px;
+                min-height: 40px;
+            }
+
+            .record-card {
+                min-height: 56px;
+            }
+
+            .progress-bar {
+                height: 24px;
+            }
+
+            .vol-slider::-webkit-slider-thumb {
+                width: 16px;
+                height: 16px;
+            }
+
+            /* Remove hover effects on touch devices */
+            .record-card:hover {
+                transform: none;
+            }
+
+            .record-card:active {
+                transform: scale(0.98);
+            }
+
+            .back-btn:hover {
+                transform: none;
+            }
+
+            .back-btn:active {
+                transform: scale(0.98);
+            }
+        }
+
+        /* ─── Landscape orientation optimizations ────── */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .album-room {
+                padding: 10px;
+            }
+
+            .album-header {
+                padding: 0 6px 10px;
+                margin-bottom: 12px;
+            }
+
+            .main-area {
+                flex-direction: row;
+                gap: 20px;
+            }
+
+            .shelf-section {
+                flex: 0 0 200px;
+                order: 1;
+                max-width: 200px;
+            }
+
+            .shelf {
+                max-height: 350px;
+            }
+
+            .player-section {
+                order: 2;
+            }
+
+            .drop-zone {
+                max-width: 320px;
+            }
+
+            .controls {
+                max-width: 320px;
+            }
+        }
     </style>
 </head>
 <body class="album-player-page">
@@ -1226,7 +1856,12 @@
 
         <div class="main-area">
             <div class="shelf-section">
-                <div class="shelf-label" id="album-info">— Loading Album —</div>
+                <div class="album-details">
+                    <div class="album-details-title" id="album-title">Loading Album...</div>
+                    <div class="album-details-artist" id="album-artist"></div>
+                    <div class="album-details-description" id="album-description"></div>
+                </div>
+                <div class="shelf-label">TRACKLIST</div>
                 <div class="shelf" id="shelf"></div>
                 <div class="drag-hint">↑ drag to turntable ↑</div>
             </div>
