@@ -43,3 +43,6 @@ build/
 tmp/
 temp/
 *.tmp
+
+# Deployment files with sensitive keys
+RENDER_DEPLOYMENT.md
