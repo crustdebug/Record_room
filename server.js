@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const fs = require('fs');
 const { initializeDatabase } = require('./database/db');
 
 const app = express();

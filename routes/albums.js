@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
 const { supabase } = require('../utils/supabase');
 
@@ -105,15 +104,10 @@ router.put('/:id', requireAdmin, uploadCover.single('cover'), async (req, res) =
     }
     coverImage = supabase.storage.from('covers').getPublicUrl(uniqueName).data.publicUrl;
 
-    // If new cover uploaded, delete old one
-    if (existing.cover_image) {
-      if (existing.cover_image.startsWith('http') && supabase) {
-        const oldName = existing.cover_image.split('/').pop();
-        await supabase.storage.from('covers').remove([oldName]);
-      } else {
-        const oldPath = path.join(__dirname, '..', existing.cover_image);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
+    // If new cover uploaded, delete old one from Supabase
+    if (existing.cover_image && existing.cover_image.startsWith('http') && supabase) {
+      const oldName = existing.cover_image.split('/').pop();
+      await supabase.storage.from('covers').remove([oldName]);
     }
   }
 
@@ -147,15 +141,10 @@ router.delete('/:id', requireAdmin, async (req, res) => {
     }
   });
 
-  // Delete cover image
-  if (album.cover_image) {
-    if (album.cover_image.startsWith('http') && supabase) {
-      const coverName = album.cover_image.split('/').pop();
-      await supabase.storage.from('covers').remove([coverName]);
-    } else {
-      const coverPath = path.join(__dirname, '..', album.cover_image);
-      if (fs.existsSync(coverPath)) fs.unlinkSync(coverPath);
-    }
+  // Delete cover image from Supabase
+  if (album.cover_image && album.cover_image.startsWith('http') && supabase) {
+    const coverName = album.cover_image.split('/').pop();
+    await supabase.storage.from('covers').remove([coverName]);
   }
 
   // Delete from DB (Supabase handles cascade if configured, but we let Postgres do it)

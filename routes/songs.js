@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
 const { supabase } = require('../utils/supabase');
 
@@ -85,15 +84,10 @@ router.delete('/:id', requireAdmin, async (req, res) => {
     return res.status(404).json({ error: 'Song not found.' });
   }
 
-  // Delete file
-  if (song.file_path) {
-    if (song.file_path.startsWith('http') && supabase) {
-      const fileName = song.file_path.split('/').pop();
-      await supabase.storage.from('songs').remove([fileName]);
-    } else {
-      const songPath = path.join(__dirname, '..', song.file_path);
-      if (fs.existsSync(songPath)) fs.unlinkSync(songPath);
-    }
+  // Delete file from Supabase
+  if (song.file_path && song.file_path.startsWith('http') && supabase) {
+    const fileName = song.file_path.split('/').pop();
+    await supabase.storage.from('songs').remove([fileName]);
   }
 
   await supabase.from('songs').delete().eq('id', req.params.id);
@@ -109,40 +103,12 @@ router.get('/stream/:id', requireAuth, async (req, res) => {
     return res.status(404).json({ error: 'Song not found.' });
   }
 
-  if (song.file_path.startsWith('http')) {
+  // All files are in Supabase Storage, redirect to the public URL
+  if (song.file_path && song.file_path.startsWith('http')) {
     return res.redirect(song.file_path);
   }
 
-  const songPath = path.join(__dirname, '..', song.file_path);
-
-  if (!fs.existsSync(songPath)) {
-    return res.status(404).json({ error: 'Audio file not found on disk.' });
-  }
-
-  const stat = fs.statSync(songPath);
-  const range = req.headers.range;
-
-  if (range) {
-    const parts = range.replace(/bytes=/, '').split('-');
-    const start = parseInt(parts[0], 10);
-    const end = parts[1] ? parseInt(parts[1], 10) : stat.size - 1;
-    const chunkSize = end - start + 1;
-
-    const stream = fs.createReadStream(songPath, { start, end });
-    res.writeHead(206, {
-      'Content-Range': `bytes ${start}-${end}/${stat.size}`,
-      'Accept-Ranges': 'bytes',
-      'Content-Length': chunkSize,
-      'Content-Type': 'audio/mpeg'
-    });
-    stream.pipe(res);
-  } else {
-    res.writeHead(200, {
-      'Content-Length': stat.size,
-      'Content-Type': 'audio/mpeg'
-    });
-    fs.createReadStream(songPath).pipe(res);
-  }
+  return res.status(404).json({ error: 'Audio file not found.' });
 });
 
 module.exports = router;
