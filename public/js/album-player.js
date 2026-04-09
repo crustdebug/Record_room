@@ -10,6 +10,7 @@
   let albumData = null;
   let songs = [];
   let currentSong = null;
+  let lastPlayedSongId = null; // Track the last song that was actually playing
   let isPlaying = false;
   let dragSongId = null;
   let audioElement = null;
@@ -216,6 +217,12 @@
   // ─── Load Song ─────────────────────────────
   function loadSong(song) {
     stopPlayback();
+    
+    // If switching to a different song, clear the saved position of the previous song
+    if (lastPlayedSongId !== null && lastPlayedSongId !== song.id) {
+      clearPlaybackPosition(lastPlayedSongId);
+    }
+    
     currentSong = song;
     
     dropZone.classList.add('has-record');
@@ -268,7 +275,7 @@
           currentTime.textContent = formatTime(audioElement.currentTime);
           totalTime.textContent = formatTime(audioElement.duration);
           
-          // Save playback position every 2 seconds
+          // Save playback position every 2 seconds (only for current song)
           if (Math.floor(audioElement.currentTime) % 2 === 0) {
             savePlaybackPosition(currentSong.id, audioElement.currentTime);
           }
@@ -276,6 +283,8 @@
       });
       
       audioElement.addEventListener('ended', () => {
+        // Clear position when song ends naturally
+        clearPlaybackPosition(currentSong.id);
         stopPlayback();
         // Auto-return tonearm to idle position
         tonearm.style.transform = ''; // Clear inline transform
@@ -292,16 +301,25 @@
       });
     }
 
+    // Check if we're switching to a different song
+    const isDifferentSong = lastPlayedSongId !== currentSong.id;
+    
     // Only set src if it's a different song or first time playing
     if (!audioElement.src || !audioElement.src.includes(`/api/songs/stream/${currentSong.id}`)) {
       audioElement.src = `/api/songs/stream/${currentSong.id}`;
       
-      // Restore last playback position
-      const savedPosition = getPlaybackPosition(currentSong.id);
-      if (savedPosition > 0) {
-        audioElement.currentTime = savedPosition;
+      // Only restore position if resuming the SAME song (not switching songs)
+      if (!isDifferentSong) {
+        const savedPosition = getPlaybackPosition(currentSong.id);
+        if (savedPosition > 0) {
+          audioElement.currentTime = savedPosition;
+        }
       }
+      // If it's a different song, start from beginning (currentTime defaults to 0)
     }
+    
+    // Update last played song ID
+    lastPlayedSongId = currentSong.id;
     
     // Resume or start playback
     audioElement.play().catch(err => {
@@ -318,7 +336,10 @@
     
     if (audioElement) {
       audioElement.pause();
-      // Don't reset currentTime - keep position for resume
+      // Save current position when pausing (for resume)
+      if (currentSong) {
+        savePlaybackPosition(currentSong.id, audioElement.currentTime);
+      }
     }
   }
 
@@ -750,6 +771,11 @@
     const key = `recordroom-position-${songId}`;
     const saved = localStorage.getItem(key);
     return saved ? parseFloat(saved) : 0;
+  }
+
+  function clearPlaybackPosition(songId) {
+    const key = `recordroom-position-${songId}`;
+    localStorage.removeItem(key);
   }
 
   // ─── Start ─────────────────────────────────
